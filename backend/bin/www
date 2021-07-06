@@ -1,0 +1,22 @@
+const http = require("http");
+const config = require("../src/config/config");
+const database = require("../src/config/database");
+const app = require("../src/routes/app");
+
+function onError(error) {
+  console.error(`Failed to start server:\n${error.stack}`);
+  process.exit(1);
+}
+
+app.set("port", config.port);
+try {
+  database.connect();
+  console.info("connected to database");
+} catch (error) {
+  onError(error);
+}
+const server = http.createServer(app);
+server.listen(config.port);
+server.on("error", onError);
+
+module.exports = server;
